@@ -29,3 +29,11 @@ platformIO Libraries:
 
 Forks:
 Starfield face (incl dusk2dawn)
+
+Keys files:
+    platformio.ini
+    espc-main.cpp
+    settings.h
+    watchy_7.cpp
+    watchy_7.h
+    watchy/config.h

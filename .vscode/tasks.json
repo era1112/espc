@@ -9,6 +9,27 @@
 			],
 			"group": "build",
 			"label": "PlatformIO: Build"
+		},
+		{
+			"type": "PlatformIO",
+			"task": "Upload and Monitor",
+			"problemMatcher": [
+				"$platformio"
+			],
+			"label": "PlatformIO: Upload and Monitor",
+			"group": "build"
+		},
+		{
+			"type": "PlatformIO",
+			"task": "Upload",
+			"problemMatcher": [
+				"$platformio"
+			],
+			"label": "PlatformIO: Upload",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
 	]
 }

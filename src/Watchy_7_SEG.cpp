@@ -1,14 +1,15 @@
 #include "Watchy_7_SEG.h"
 
 // latitude, longitude, timezone (for astronomy calcs)
-#define LOC 45.42, -75.69, -4 // Ottawa
+#define LAT 45.145805 // 416 @ Roger Stevens
+#define LON -75.680771
+#define TIMEZONE 4  //EDT is UTC -4(DST) vs -5 (EST)
 
 RTC_DATA_ATTR bool DARKMODE = false;
 RTC_DATA_ATTR bool HOUR_SET = true;
 // RTC_DATA_ATTR int showState = 0;
 
 moonPhaser moonP;
-
 
 // TODO: vibrate function
 void Watchy7SEG::vibrate(uint8_t times, uint32_t delay_duration)
@@ -714,7 +715,7 @@ void Watchy7SEG::drawMoon() {
 }
 
 void Watchy7SEG::drawSun() {
-    Dusk2Dawn location(LOC);
+    Dusk2Dawn location(LAT, LON, TIMEZONE);
     int year = currentTime.Year + 1970;
     int32_t month = currentTime.Month;
     int32_t day = currentTime.Day;

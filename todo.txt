@@ -1,0 +1,20 @@
+
+Next steps:
+x- Clean up dev space
+    platformio.ini
+    espc-main.cpp
+    settings.h
+    watchy_7.cpp
+    watchy_7.h
+    watchy/config.h
+- settings.h into main?
+- fix vibe time
+- fix alarm o clock
+- check for better/newer astro
+- need wifimanager?
+- espidf?
+- Add entry to menu (Wx)
+- Better wifi ctrl
+- Add element to face (MOTD, rng, incr)
+- Cycle faces
+- BLE
