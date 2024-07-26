@@ -1,4 +1,4 @@
-** Watchy-toolbox
+esp32 as a daily carry smartwatch
 
 
 Added:
