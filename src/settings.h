@@ -8,6 +8,7 @@
 #define TEMP_UNIT "metric" //metric = Celsius , imperial = Fahrenheit
 #define TEMP_LANG "en"
 #define WEATHER_UPDATE_INTERVAL 30 //must be greater than 5, measured in minutes
+
 //NTP Settings
 #define NTP_SERVER "pool.ntp.org"
 #define GMT_OFFSET_SEC 3600 * -4 //Ottawa is UTC -4(DST)

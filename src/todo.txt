@@ -1,0 +1,12 @@
+
+Next steps:
+- rename
+- improve DARDUINO_WATCHY_V20 declaration
+- need wifimanager?
+- Clean up dev space (check for better/newer astro)
+- espidf?
+- Add entry to menu (Wx)
+- Better wifi ctrl
+- Add element to face (MOTD, rng, incr)
+- Cycle faces
+- BLE

@@ -1,10 +1,5 @@
 #include "Watchy_7_SEG.h"
 
-//#define DARKMODE true
-
-#define HOUR_SET 12 // change it to 12 to switch to 12-hour
-
-
 // latitude, longitude, timezone (for astronomy calcs)
 #define LOC 45.42, -75.69, -4 // Ottawa
 
