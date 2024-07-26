@@ -18,11 +18,17 @@ Want to add:
 - book reader
 
 Dependencies:
+
 Hardware: Watchy rev2.0
+
 IDE: PlatformIO @ 3.3.3
+
 platformIO "Platform": espressif32 @ 6.7.0
+
 platformIO "Framework": arduino
+
 platformIO "Board": sqfmi watchy 2.0
+
 platformIO Libraries:
     watchy @ 1.4.14
     wnatth3/WiFiManager @ 2.0.16-rc.2
