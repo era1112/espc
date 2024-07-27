@@ -4,18 +4,7 @@ esp32 as a daily carry smartwatch
 Added:
 - Time as vibrations
 
-Want to add:
-- rng
-- totp
-- increment counter
-- motd
-- research tools
-- applejuice
-- temp
-- wx w/ alerts
-- bt link
-- open wifi user
-- book reader
+
 
 Dependencies:
 Hardware: Watchy rev2.0

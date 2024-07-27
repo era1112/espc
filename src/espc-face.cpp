@@ -1,102 +1,12 @@
-#include "Watchy_7_SEG.h"
-
-// latitude, longitude, timezone (for astronomy calcs)
-#define LAT 45.145805 // 416 @ Roger Stevens
-#define LON -75.680771
-#define TIMEZONE 4  //EDT is UTC -4(DST) vs -5 (EST)
+#include "espc.h"
 
 RTC_DATA_ATTR bool DARKMODE = false;
-RTC_DATA_ATTR bool HOUR_SET = true;
-// RTC_DATA_ATTR int showState = 0;
+RTC_DATA_ATTR bool HOUR_SET = false; // 12 hour mode
+RTC_DATA_ATTR int showState = 0;
 
 moonPhaser moonP;
 
-// TODO: vibrate function
-void Watchy7SEG::vibrate(uint8_t times, uint32_t delay_duration)
-{
-  sensor.enableFeature(BMA423_WAKEUP, false);
-
-  pinMode(VIB_MOTOR_PIN, OUTPUT);
-  for (uint8_t i = 0; i < (times); i++)
-  {
-    digitalWrite(VIB_MOTOR_PIN, true);
-    delay(delay_duration);
-    digitalWrite(VIB_MOTOR_PIN, false);
-    delay(delay_duration);
-  }
-
-  sensor.enableFeature(BMA423_WAKEUP, true);
-}
-
-// // TODO: there must be a library that doesn't store this in plain 
-//        WiFiManager wm;
-// wm.autoConnect("NEST-CCTV-52687","home(NET)@493#62199"); // home IoT net
-
-
-// Tap out the time
-void Watchy7SEG::vibrateTime()
-{
-  
-  // Vibrate once per hour (am/pm)
-  uint8_t twelveHr = currentTime.Hour % 12;
-  vibrate(twelveHr, 300);
-
-  delay(1000);
-
-  // Vibrate once per 15 min
-  uint8_t quarterHour = currentTime.Minute / 15;
-  vibrate(quarterHour, 200);
-
-  delay(1000);
-
-  // Vibrate once per 5/10 min after the 15
-  uint8_t fiveMins = (currentTime.Minute % 15) / 5;
-  vibrate(quarterHour, 100);
-}
-
-void Watchy7SEG::handleButtonPress()
-{
-    if (guiState == WATCHFACE_STATE)
-    {
-        uint64_t wakeupBit = esp_sleep_get_ext1_wakeup_status();
-        if (wakeupBit & UP_BTN_MASK) 
-        {
-            // showState++;
-            // if (showState > 2) { showState = 0; }
-            // HOUR_SET = !HOUR_SET;
-            RTC.read(currentTime);
-            showWatchFace(true);
-            vibrateTime(); // TODO: vibrate time func
-            return;
-
-        }
-        if (wakeupBit & DOWN_BTN_MASK) 
-        {
-            // showState--;
-            // if (showState < 0) { showState = 2; }
-            HOUR_SET = !HOUR_SET;
-            RTC.read(currentTime);
-            showWatchFace(true);
-            return;
-        }
-        if (wakeupBit & BACK_BTN_MASK) 
-        {
-            DARKMODE = !DARKMODE;
-            RTC.read(currentTime);
-            showWatchFace(true);
-            return;
-        } 
-        if (wakeupBit & MENU_BTN_MASK) 
-        {
-            Watchy::handleButtonPress();
-            return;
-        }
-    } 
-    else {Watchy::handleButtonPress();}
-    return;
-}
-
-void Watchy7SEG::drawWatchFace()
+void ESPC::drawWatchFace()
 {
     display.fillScreen(DARKMODE ? GxEPD_BLACK : GxEPD_WHITE);
     display.setTextColor(DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
@@ -104,8 +14,8 @@ void Watchy7SEG::drawWatchFace()
     drawTime();
     drawDate();
     drawSteps();
-    // drawWeather();
     drawBattery();
+    // drawWeather();
     // drawEva();
     // drawLine();
 
@@ -118,30 +28,93 @@ void Watchy7SEG::drawWatchFace()
     drawSun();
 }
 
-void Watchy7SEG::drawTime()
+// Vibrate function
+void ESPC::vibrate(int times, int buzz_duration, int delay_duration)
+{
+  pinMode(VIB_MOTOR_PIN, OUTPUT);
+  for (int i = 0; i < (times); i++)
+  {
+    digitalWrite(VIB_MOTOR_PIN, true);
+    delay(buzz_duration);
+    digitalWrite(VIB_MOTOR_PIN, false);
+    delay(delay_duration);
+  }
+}
+
+// Tap out the time
+void ESPC::vibrateTime()
+{
+  // Vibrate once per hour (am/pm)
+  int twelveHr = currentTime.Hour % 12;
+  vibrate(twelveHr, 300, 300);
+
+  delay(1000);
+
+  // Vibrate once per 15 min after the hr
+  int quarterHour = currentTime.Minute / 15;
+  vibrate(quarterHour, 200, 200);
+
+  delay(1000);
+
+  // Vibrate once per 5 min after the 15
+  int fiveMins = (currentTime.Minute - (quarterHour * 15)) / 5;
+  vibrate(fiveMins, 100, 100);
+}
+
+void ESPC::handleButtonPress()
+{
+    if (guiState == WATCHFACE_STATE)
+    {
+        uint64_t wakeupBit = esp_sleep_get_ext1_wakeup_status();
+        
+        // Up Button: Vibrate time of day
+        if (wakeupBit & UP_BTN_MASK) 
+        {
+            showState++;
+            if (showState > 2) { showState = 0; }
+            ; HOUR_SET = !HOUR_SET;
+            RTC.read(currentTime);
+            showWatchFace(true);
+            vibrateTime(); 
+            return;
+        }
+
+        // Down Button: Change 12/24
+        if (wakeupBit & DOWN_BTN_MASK) 
+        {
+            showState--;
+            if (showState < 0) { showState = 2; }
+            HOUR_SET = !HOUR_SET;
+            RTC.read(currentTime);
+            showWatchFace(true);
+            return;
+        }
+
+        // Back Button: Invert dark mode
+        if (wakeupBit & BACK_BTN_MASK) 
+        {
+            DARKMODE = !DARKMODE;
+            RTC.read(currentTime);
+            showWatchFace(true);
+            return;
+        } 
+
+        // Menu Button: Call menu 
+        if (wakeupBit & MENU_BTN_MASK) 
+        {
+            Watchy::handleButtonPress();
+            return;
+        }
+    }
+    else {Watchy::handleButtonPress();}
+    return;
+}
+
+
+void ESPC::drawTime()
 {
     display.setFont(&DSEG7_Classic_Bold_53);
     display.setCursor(6, 53+5);
-    // int displayHour;
-    // if(HOUR_SET==12)
-    // {
-    //     displayHour = ((currentTime.Hour+11)%12)+1;
-    // } 
-    // else 
-    // {
-    //     displayHour = currentTime.Hour;
-    // }
-    // if(displayHour < 10)
-    // {
-    //     display.print("0");
-    // }
-    // display.print(displayHour);
-    // display.print(":");
-    // if(currentTime.Minute < 10)
-    // {
-    //     display.print("0");
-    // }
-    // display.println(currentTime.Minute);
     long ss = currentTime.Hour * 60 + currentTime.Minute;
     int sh = ss / 60;
 
@@ -249,10 +222,9 @@ void Watchy7SEG::drawTime()
         display.drawBitmap(155, 5, fd_8, 33, 53, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
     else if (d == 9)
         display.drawBitmap(155, 5, fd_9, 33, 53, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
-        
 }
 
-void Watchy7SEG::drawDate()
+void ESPC::drawDate()
 {
     display.setFont(&Seven_Segment10pt7b);
 
@@ -273,16 +245,6 @@ void Watchy7SEG::drawDate()
     display.getTextBounds(month, 60, 110, &x1, &y1, &w, &h);
     display.setCursor(79 - w, 110);
     display.println(month);
-
-    // display.setFont(&DSEG7_Classic_Bold_25);
-    // display.setCursor(6, 120);
-    // if(currentTime.Day < 10)
-    // {
-    // display.print("0");
-    // }
-    // display.println(currentTime.Day);
-    // display.setCursor(6, 154);
-    // display.println(tmYearToCalendar(currentTime.Year));// offset from 1970, since year is stored in uint8_t
 
     int da = currentTime.Day;
     int ye = currentTime.Year + 1970;
@@ -424,7 +386,7 @@ void Watchy7SEG::drawDate()
         display.drawBitmap(71, 129, dd_9, 16, 25, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
 
 }
-void Watchy7SEG::drawSteps()
+void ESPC::drawSteps()
 {
     // reset step counter at midnight
     if (currentTime.Hour == 0 && currentTime.Minute == 0)
@@ -587,7 +549,7 @@ void Watchy7SEG::drawSteps()
 
 
 }
-void Watchy7SEG::drawBattery()
+void ESPC::drawBattery()
 {
     // display.drawBitmap(154, 73, battery, 37, 21, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
     // display.fillRect(159, 78, 27, BATTERY_SEGMENT_HEIGHT, DARKMODE ? GxEPD_BLACK : GxEPD_WHITE);//clear battery segments
@@ -639,14 +601,14 @@ void Watchy7SEG::drawBattery()
 
 
 
-void Watchy7SEG::drawFiel()
+void ESPC::drawFiel()
 {
     display.drawBitmap(0, 0, field, 200, 200, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
 }
 
 
-void Watchy7SEG::drawMoon() {
-    moonData_t moon;                        // variable to receive the data
+void ESPC::drawMoon() {
+    moonData_t moon;
     
     // January 31st, 2020 @ 1:30PM UTC
     int year = currentTime.Year + 1970;
@@ -658,8 +620,6 @@ void Watchy7SEG::drawMoon() {
 
     int ag = moon.angle;
     double lt = moon.percentLit;
-
-
 
     // Waxing: 0-180
     // Waning: 180-360
@@ -702,7 +662,7 @@ void Watchy7SEG::drawMoon() {
 
     // display.print(moon.angle);
     // display.setCursor(100, 100);
-    // // display.print(moon.percentLit);
+    // display.print(moon.percentLit);
     // display.print(month);
 
     // display.setCursor(100, 130);
@@ -714,7 +674,7 @@ void Watchy7SEG::drawMoon() {
     //  Serial.println( moon.percentLit * 100 );  // percentLit is a real between 0-1
 }
 
-void Watchy7SEG::drawSun() {
+void ESPC::drawSun() {
     Dusk2Dawn location(LAT, LON, TIMEZONE);
     int year = currentTime.Year + 1970;
     int32_t month = currentTime.Month;
@@ -923,84 +883,84 @@ void Watchy7SEG::drawSun() {
         display.drawBitmap(132, 137, num_9, 3, 5, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
 }
 
-// void Watchy7SEG::drawWeather()
-// {
+void ESPC::drawWeather()
+{
 
-//    weatherData currentWeather = getWeatherData();
+   weatherData currentWeather = getWeatherData();
 
-//    int8_t temperature = currentWeather.temperature;
-//    int16_t weatherConditionCode = currentWeather.weatherConditionCode;
+   int8_t temperature = currentWeather.temperature;
+   int16_t weatherConditionCode = currentWeather.weatherConditionCode;
 
-//    display.setFont(&DSEG7_Classic_Regular_39);
-//    int16_t  x1, y1;
-//    uint16_t w, h;
-//    display.getTextBounds(String(temperature), 0, 0, &x1, &y1, &w, &h);
-//    if(159 - w - x1 > 87)
-//    {
-//        display.setCursor(159 - w - x1, 150);
-//    }
-//    else
-//    {
-//        display.setFont(&DSEG7_Classic_Bold_25);
-//        display.getTextBounds(String(temperature), 0, 0, &x1, &y1, &w, &h);
-//        display.setCursor(159 - w - x1, 136);
-//    }
-//    display.println(temperature);
-//    display.drawBitmap(165, 110, currentWeather.isMetric ? celsius : fahrenheit, 26, 20, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
-//    const unsigned char* weatherIcon;
+   display.setFont(&DSEG7_Classic_Regular_39);
+   int16_t  x1, y1;
+   uint16_t w, h;
+   display.getTextBounds(String(temperature), 0, 0, &x1, &y1, &w, &h);
+   if(159 - w - x1 > 87)
+   {
+       display.setCursor(159 - w - x1, 150);
+   }
+   else
+   {
+       display.setFont(&DSEG7_Classic_Bold_25);
+       display.getTextBounds(String(temperature), 0, 0, &x1, &y1, &w, &h);
+       display.setCursor(159 - w - x1, 136);
+   }
+   display.println(temperature);
+   display.drawBitmap(165, 110, currentWeather.isMetric ? celsius : fahrenheit, 26, 20, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+   const unsigned char* weatherIcon;
 
-  //  //https://openweathermap.org/weather-conditions
-  //  if(weatherConditionCode > 801)
-  //  {
-  //      //Cloudy
-  //      weatherIcon = cloudy;
-  //  }
-  //  else if(weatherConditionCode == 801)
-  //  {
-  //      //Few Clouds
-  //      weatherIcon = cloudsun;
-  //  }
-  //  else if(weatherConditionCode == 800)
-  //  {
-  //      //Clear
-  //      weatherIcon = sunny;
-  //  }
-  //  else if(weatherConditionCode >=700)
-  //  {
-  //      //Atmosphere
-  //      weatherIcon = atmosphere;
-  //  }
-  //  else if(weatherConditionCode >=600)
-  //  {
-  //      //Snow
-  //      weatherIcon = snow;
-  //  }
-  //  else if(weatherConditionCode >=500)
-  //  {
-  //      //Rain
-  //      weatherIcon = rain;
-  //  }
-  //  else if(weatherConditionCode >=300)
-  //  {
-  //      //Drizzle
-  //      weatherIcon = drizzle;
-  //  }
-  //  else if(weatherConditionCode >=200)
-  //  {
-  //      //Thunderstorm
-  //      weatherIcon = thunderstorm;
-  //  }
-  //  else
-  //      return;
-  //  display.drawBitmap(145, 158, weatherIcon, WEATHER_ICON_WIDTH, WEATHER_ICON_HEIGHT, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
-// }
+   //https://openweathermap.org/weather-conditions
+   if(weatherConditionCode > 801)
+   {
+       //Cloudy
+       weatherIcon = cloudy;
+   }
+   else if(weatherConditionCode == 801)
+   {
+       //Few Clouds
+       weatherIcon = cloudsun;
+   }
+   else if(weatherConditionCode == 800)
+   {
+       //Clear
+       weatherIcon = sunny;
+   }
+   else if(weatherConditionCode >=700)
+   {
+       //Atmosphere
+       weatherIcon = atmosphere;
+   }
+   else if(weatherConditionCode >=600)
+   {
+       //Snow
+       weatherIcon = snow;
+   }
+   else if(weatherConditionCode >=500)
+   {
+       //Rain
+       weatherIcon = rain;
+   }
+   else if(weatherConditionCode >=300)
+   {
+       //Drizzle
+       weatherIcon = drizzle;
+   }
+   else if(weatherConditionCode >=200)
+   {
+       //Thunderstorm
+       weatherIcon = thunderstorm;
+   }
+   else
+       return;
+   display.drawBitmap(145, 158, weatherIcon, 26, 20, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+}
 
-// void Watchy7SEG::drawEva()
-// {
-//     display.drawBitmap(105, 100, eva, 100, 100, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
-// }
+void ESPC::drawEva()
+{
+    display.drawBitmap(105, 100, eva, 100, 100, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+}
 
-// void Watchy7SEG::drawLine()
-// {
-//     display.drawBitmap(100, 72, line, 1, 77, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
-// }
+void ESPC::drawLine()
+{
+    display.drawBitmap(100, 72, line, 1, 77, DARKMODE ? GxEPD_WHITE : GxEPD_BLACK);
+}
