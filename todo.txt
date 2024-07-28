@@ -1,15 +1,17 @@
-
 Next steps:
-X - Add Wx to menu
+
+- global dark/light mode
+- Autoconnect to hotspot
+- Add Wx report to menu
 - Cycle faces
+- reset button
 - Add element to face (MOTD, rng, incr)
 - try watchy_7_seg.h exper funcs
 - check for better/newer astro
 - moon state might be inverted
-- need wifimanager?
 - Better webui
 - BLE
-
+- geolocator
 - rng
 - totp
 - increment counter
