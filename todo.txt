@@ -1,20 +1,20 @@
 [] pick base os
-[] pick face
-sqmfi base
+[] pick face (multi or starfield-esque)
+sqmfi base (meh)
 	https://watchy.sqfmi.com/docs/getting-started
 sqmfi faces
 	https://watchy.sqfmi.com/watchfaces
 alts:
-	inkwatchy: https://github.com/Szybet/InkWatchy/releases/tag/v0.5
-	gsr: https://github.com/GuruSR/Watchy_GSR
+	inkwatchy: https://github.com/Szybet/InkWatchy/releases/tag/v0.5 (meh, extensible is nice)
+	gsr: https://github.com/GuruSR/Watchy_GSR (has face changer, maybe nicer ota)
 	tiny: https://github.com/Michal-Szczepaniak/TinyWatchy
-	starfield: https://github.com/Szybet/watchy-starfield
+	starfield: https://github.com/Szybet/watchy-starfield (looks nice, def firmware tho)
 	minty: https://github.com/NiklasNeugebauer/minty-os
 	scom: https://github.com/Szybet/watchy-scom
 
 
 make my own (ESPC)
-base os 
+base os (inkwatchy)
 	rng
 	topt
 	vaibratetime
