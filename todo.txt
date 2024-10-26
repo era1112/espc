@@ -1,5 +1,3 @@
-[] pick base os
-[] pick face (multi or starfield-esque)
 sqmfi base (meh)
 	https://watchy.sqfmi.com/docs/getting-started
 sqmfi faces
@@ -13,8 +11,8 @@ alts:
 	scom: https://github.com/Szybet/watchy-scom
 
 
-make my own (ESPC)
-base os (inkwatchy)
+[]base os (inkwatchy)
+[]face: starfield w/ progress bars
 	rng
 	topt
 	vaibratetime
