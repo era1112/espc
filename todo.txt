@@ -1,26 +1,45 @@
-Next steps:
-- opt levels
-- global dark/light mode
-- Autoconnect to hotspot
-- Add Wx report to menu
-- Cycle faces
-- reset button
-- alarm
-- tunes
-- Add element to face (MOTD, rng, incr)
-- try watchy_7_seg.h exper funcs
-- check for better/newer astro
-- moon state might be inverted
-- Better webui
-- BLE
-- geolocator
-- rng
-- totp
-- increment counter
-- motd
-- research tools
-- applejuice
-- temp
-- wx w/ alerts
-- open wifi user
-- book reader
+[] pick base os
+[] pick face
+sqmfi base
+	https://watchy.sqfmi.com/docs/getting-started
+sqmfi faces
+	https://watchy.sqfmi.com/watchfaces
+alts:
+	inkwatchy: https://github.com/Szybet/InkWatchy/releases/tag/v0.5
+	gsr: https://github.com/GuruSR/Watchy_GSR
+	tiny: https://github.com/Michal-Szczepaniak/TinyWatchy
+	starfield: https://github.com/Szybet/watchy-starfield
+	minty: https://github.com/NiklasNeugebauer/minty-os
+	scom: https://github.com/Szybet/watchy-scom
+
+
+make my own (ESPC)
+base os 
+	rng
+	topt
+	vaibratetime
+  geolocator
+  book reader
+	motd
+	research tools
+	temp
+	counter
+	wx alerts
+	bt link vs wifi
+	book reader
+  applejuice
+  open wifi user
+  BLR
+  better ui
+  better webui (qr code on eink?)
+  moon state
+  newer/better astro
+  try watchy_7_seg.h exper funcs
+  alarm
+  tunes
+  reset button
+  cycle faces
+  wx report
+  autoconnect to hotspot
+  global dark/light mode
+  opt levels
