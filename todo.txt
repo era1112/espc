@@ -1,3 +1,36 @@
+
+[]base os (inkwatchy)
+[]face: proukunen starfield w/ progress bars
+
+webUI
+	QR code?
+	marauder tools?
+
+Tools
+	rng
+	topt
+	vaibratetime
+  	geolocator
+  	book reader
+	motd
+	research tools
+	temp
+	counter
+	wx alerts
+	bt link vs wifi
+	applejuice
+  	open wifi user
+  	BLR
+    	moon state
+  	newer/better astro
+  	alarm
+  	tunes
+  	cycle faces
+	split views (2 panes)
+  	wx report
+  	autoconnect to hotspot
+  	global dark/light mode
+
 sqmfi base (meh)
 	https://watchy.sqfmi.com/docs/getting-started
 sqmfi faces
@@ -10,34 +43,3 @@ alts:
 	minty: https://github.com/NiklasNeugebauer/minty-os
 	scom: https://github.com/Szybet/watchy-scom
 
-
-[]base os (inkwatchy)
-[]face: proukunen starfield w/ progress bars
-	rng
-	topt
-	vaibratetime
-  geolocator
-  book reader
-	motd
-	research tools
-	temp
-	counter
-	wx alerts
-	bt link vs wifi
-	book reader
-  applejuice
-  open wifi user
-  BLR
-  better ui
-  better webui (qr code on eink?)
-  moon state
-  newer/better astro
-  try watchy_7_seg.h exper funcs
-  alarm
-  tunes
-  reset button
-  cycle faces
-  wx report
-  autoconnect to hotspot
-  global dark/light mode
-  opt levels
