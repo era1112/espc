@@ -1,5 +1,6 @@
 
-[]base os (inkwatchy)
+[x]base os (inkwatchy)
+[]src fork
 []face: proukunen starfield w/ progress bars
 
 webUI
