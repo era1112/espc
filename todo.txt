@@ -5,11 +5,13 @@
 
 webUI
 	QR code?
-	marauder tools?
+	
 
 Tools
 	rng
 	topt
+	marauder tools?
+	applejuice/sourapple?
 	vaibratetime
   	geolocator
   	book reader
@@ -19,8 +21,7 @@ Tools
 	counter
 	wx alerts
 	bt link vs wifi
-	applejuice
-  	open wifi user
+	open wifi user
   	BLR
     	moon state
   	newer/better astro
