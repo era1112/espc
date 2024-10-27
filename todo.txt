@@ -12,7 +12,7 @@ alts:
 
 
 []base os (inkwatchy)
-[]face: starfield w/ progress bars
+[]face: proukunen starfield w/ progress bars
 	rng
 	topt
 	vaibratetime
